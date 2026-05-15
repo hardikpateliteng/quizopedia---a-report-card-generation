@@ -1,0 +1,163 @@
+{% extends 'admin_base.html' %}
+{% block title %}Analytics — Quiz Academy{% endblock %}
+{% block page_title %}Analytics Dashboard{% endblock %}
+{% block nav_analytics %}active{% endblock %}
+
+{% block content %}
+<h1 class="page-heading">Analytics Dashboard</h1>
+<p class="page-subheading">Performance overview across all students and quizzes.</p>
+
+<!-- STAT CARDS -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon primary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+    </div>
+    <div class="stat-info"><h3>Total Students</h3><div class="stat-value">{{ total_students }}</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon success">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    </div>
+    <div class="stat-info"><h3>Active Quizzes</h3><div class="stat-value">{{ active_quizzes }}<span style="font-size:1rem;color:var(--text-muted);"> / {{ total_quizzes }}</span></div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon warning">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138"/></svg>
+    </div>
+    <div class="stat-info"><h3>Total Attempts</h3><div class="stat-value">{{ total_attempts }}</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon info">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+    </div>
+    <div class="stat-info"><h3>Platform Avg Score</h3><div class="stat-value">{{ avg_pct }}<span style="font-size:1.1rem;">%</span></div></div>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px;">
+
+  <!-- TOP PERFORMERS -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">🏆 Top Performers</h2>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>#</th><th>Student</th><th>Quizzes</th><th class="td-center">Avg Score</th></tr>
+        </thead>
+        <tbody>
+          {% for item in top_performers %}
+          <tr>
+            <td class="text-muted">
+              {% if forloop.counter == 1 %}🥇{% elif forloop.counter == 2 %}🥈{% elif forloop.counter == 3 %}🥉{% else %}#{{ forloop.counter }}{% endif %}
+            </td>
+            <td class="td-primary">
+              <a href="{% url 'admin_student_detail' item.student.id %}" style="color:var(--primary);">
+                {{ item.student.first_name|default:item.student.username }}
+              </a>
+            </td>
+            <td>{{ item.quiz_count }}</td>
+            <td class="td-center fw-600 text-primary-c">{{ item.avg_pct }}%</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="padding:20px;text-align:center;color:var(--text-muted);">No attempts yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- HARDEST QUESTIONS -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">🎯 Hardest Questions</h2>
+      <span class="badge badge-danger">Lowest correct rate</span>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Question</th><th class="td-center">Attempts</th><th class="td-center">Correct Rate</th></tr>
+        </thead>
+        <tbody>
+          {% for item in hardest_questions %}
+          <tr>
+            <td style="max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+              {{ item.question.question_text|truncatechars:60 }}
+            </td>
+            <td class="td-center">{{ item.total }}</td>
+            <td class="td-center">
+              <span class="badge {% if item.rate < 30 %}badge-danger{% elif item.rate < 60 %}badge-warning{% else %}badge-success{% endif %}">
+                {{ item.rate }}%
+              </span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" style="padding:20px;text-align:center;color:var(--text-muted);">Not enough data yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ PERFORMANCE TABLE -->
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title">Quiz Performance Summary</h2>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr><th>Quiz</th><th>Subject</th><th>Status</th><th class="td-center">Attempts</th><th class="td-center">Avg Score %</th></tr>
+      </thead>
+      <tbody>
+        {% for item in quiz_stats %}
+        <tr>
+          <td class="td-primary">{{ item.quiz.title }}</td>
+          <td>{{ item.quiz.subject.name }}</td>
+          <td>
+            {% if item.quiz.is_active %}
+              <span class="badge badge-success">Active</span>
+            {% else %}
+              <span class="badge badge-warning">Inactive</span>
+            {% endif %}
+          </td>
+          <td class="td-center">{{ item.attempts }}</td>
+          <td class="td-center fw-600">
+            <span class="{% if item.avg_pct >= 70 %}text-success{% elif item.avg_pct >= 40 %}text-primary-c{% else %}text-danger{% endif %}">
+              {{ item.avg_pct }}%
+            </span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="padding:20px;text-align:center;color:var(--text-muted);">No quizzes found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SUBJECT BREAKDOWN -->
+<div class="card mt-4">
+  <div class="card-header"><h2 class="card-title">Subject Overview</h2></div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr><th>Subject</th><th class="td-center">Quizzes</th></tr>
+      </thead>
+      <tbody>
+        {% for subj in subjects %}
+        <tr>
+          <td class="td-primary">{{ subj.name }}</td>
+          <td class="td-center"><span class="badge badge-primary">{{ subj.quiz_count }}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2" style="padding:20px;text-align:center;color:var(--text-muted);">No subjects found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

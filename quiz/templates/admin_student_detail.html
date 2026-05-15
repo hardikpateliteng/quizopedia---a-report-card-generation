@@ -1,0 +1,145 @@
+{% extends 'admin_base.html' %}
+{% block title %}{{ student.first_name|default:student.username }} — Student Detail{% endblock %}
+{% block page_title %}Student Detail{% endblock %}
+{% block nav_report %}active{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-6">
+  <div>
+    <h1 class="page-heading">{{ student.first_name|default:student.username }}</h1>
+    <p class="page-subheading">Enrollment: {{ student.enrollment_no|default:"—" }}</p>
+  </div>
+  <div class="flex gap-3">
+    <a href="{% url 'edit_student_profile' student.id %}" class="btn btn-primary">Edit Student</a>
+    <form method="POST" action="{% url 'toggle_student_profile_permission' student.id %}" style="display:inline;">
+      {% csrf_token %}
+      {% if student.can_edit_profile %}
+      <button type="submit" class="btn btn-outline">Disable Student Edit</button>
+      {% else %}
+      <button type="submit" class="btn btn-primary">Allow Student Edit</button>
+      {% endif %}
+    </form>
+    <a href="{% url 'download_student_report_csv' student.id %}" class="btn btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+      Download CSV
+    </a>
+    <form method="POST" action="{% url 'delete_student' student.id %}" style="display:inline;" onsubmit="return confirm('Delete this student and all related quiz attempts?');">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{% url 'studentreport1' %}">
+      <button type="submit" class="btn btn-danger">Delete Student</button>
+    </form>
+    <a href="{% url 'index1' %}" class="btn btn-outline">← Back</a>
+  </div>
+</div>
+
+<!-- PROFILE CARD + STATS -->
+<div style="display:grid; grid-template-columns:300px 1fr; gap:24px; margin-bottom:24px;">
+
+  <div class="card">
+    <div class="card-body" style="text-align:center; padding-top:32px;">
+      <div style="width:72px;height:72px;border-radius:50%;background:var(--primary);color:white;font-size:1.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+        {{ student.username|first|upper }}
+      </div>
+      <p class="fw-700" style="font-size:1.1rem;">{{ student.first_name|default:student.username }}</p>
+      <p class="text-muted fs-sm">{{ student.email }}</p>
+    </div>
+    <div style="border-top:1px solid var(--border); padding:16px 24px;">
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="flex-between"><span class="text-muted fs-sm">Enrollment</span><span class="fw-600 fs-sm">{{ student.enrollment_no|default:"—" }}</span></div>
+        <div class="flex-between"><span class="text-muted fs-sm">Branch</span><span class="fw-600 fs-sm">{{ student.branch|default:"—" }}</span></div>
+        <div class="flex-between"><span class="text-muted fs-sm">Proctor</span><span class="fw-600 fs-sm">{{ student.proctor|default:"—" }}</span></div>
+        <div class="flex-between"><span class="text-muted fs-sm">CGPA</span><span class="fw-600 fs-sm">{{ student.cgpa }}</span></div>
+        <div class="flex-between"><span class="text-muted fs-sm">Profile Edit Permission</span>
+          {% if student.can_edit_profile %}
+          <span class="badge badge-success">Allowed</span>
+          {% else %}
+          <span class="badge badge-danger">Locked</span>
+          {% endif %}
+        </div>
+        <div class="flex-between"><span class="text-muted fs-sm">Attendance</span>
+          <span class="badge {% if student.attendance >= 75 %}badge-success{% elif student.attendance >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+            {{ student.attendance }}%
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT CARDS COLUMN -->
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <div class="stats-grid" style="grid-template-columns:1fr 1fr; margin-bottom:0;">
+      <div class="stat-card">
+        <div class="stat-icon primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/></svg></div>
+        <div class="stat-info"><h3>Quizzes Done</h3><div class="stat-value">{{ total_attempts }}</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon success"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/></svg></div>
+        <div class="stat-info"><h3>Avg Score</h3><div class="stat-value">{{ avg_pct }}%</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ATTEMPT HISTORY TABLE -->
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title">Quiz Attempt History</h2>
+    <span class="badge badge-info">{{ total_attempts }} attempts</span>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Quiz</th>
+          <th>Subject</th>
+          <th class="td-center">Score</th>
+          <th class="td-center">Total</th>
+          <th class="td-center">Percentage</th>
+          <th class="td-center">Grade</th>
+          <th>Date</th>
+          <th class="td-center">Tab Switches</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in attempt_data %}
+        <tr>
+          <td class="text-muted">{{ forloop.counter }}</td>
+          <td class="td-primary">{{ item.attempt.quiz.title }}</td>
+          <td>{{ item.attempt.quiz.subject.name }}</td>
+          <td class="td-center fw-600">{{ item.attempt.score }}</td>
+          <td class="td-center text-muted">{{ item.total_marks }}</td>
+          <td class="td-center">
+            <span class="fw-600 {% if item.percentage >= 70 %}text-success{% elif item.percentage >= 40 %}text-primary-c{% else %}text-danger{% endif %}">
+              {{ item.percentage }}%
+            </span>
+          </td>
+          <td class="td-center">
+            <span class="badge {% if item.grade == 'A+' or item.grade == 'A' %}badge-success{% elif item.grade == 'B' or item.grade == 'C' %}badge-primary{% elif item.grade == 'D' %}badge-warning{% else %}badge-danger{% endif %}">
+              {{ item.grade }}
+            </span>
+          </td>
+          <td>{{ item.attempt.start_time|date:"d M Y, h:i A" }}</td>
+          <td class="td-center">
+            {% if item.attempt.tab_switches == 0 %}
+              <span class="badge badge-success">Clean</span>
+            {% else %}
+              <span class="badge badge-danger">{{ item.attempt.tab_switches }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="9">
+            <div class="empty-state">
+              <h3>No Attempts Yet</h3>
+              <p>This student hasn't taken any quizzes yet.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

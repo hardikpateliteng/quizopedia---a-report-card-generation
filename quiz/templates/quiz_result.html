@@ -1,0 +1,111 @@
+{% extends 'stu_base.html' %}
+{% block title %}{{ quiz.title }} — Result{% endblock %}
+{% block page_title %}Quiz Result{% endblock %}
+
+{% block content %}
+<div style="max-width:800px; margin:0 auto;">
+
+  <!-- SCORE CARD -->
+  <div class="card mb-6" style="text-align:center; padding:48px 40px;">
+    <div style="font-size:4rem; margin-bottom:12px;">
+      {% if percentage >= 90 %}🏆{% elif percentage >= 70 %}🎉{% elif percentage >= 40 %}📝{% else %}💪{% endif %}
+    </div>
+    <h1 style="font-size:1.4rem; font-weight:800; margin-bottom:4px;">{{ quiz.title }}</h1>
+    <p style="color:var(--text-muted); margin-bottom:28px;">{{ quiz.subject.name }}</p>
+
+    <div style="font-size:4.5rem; font-weight:900; line-height:1;
+      color:{% if percentage >= 70 %}var(--success){% elif percentage >= 40 %}var(--primary){% else %}var(--danger){% endif %};">
+      {{ percentage }}%
+    </div>
+    <p style="color:var(--text-muted); margin-top:10px;">
+      Score: <strong style="color:var(--text-primary);">{{ attempt.score }} / {{ total_marks }}</strong>
+    </p>
+    <div style="margin-top:16px;">
+      <span class="badge" style="font-size:0.95rem; padding:8px 20px;
+        {% if grade == 'A+' or grade == 'A' %}background:var(--success-alpha);color:var(--success);
+        {% elif grade == 'B' or grade == 'C' %}background:var(--primary-alpha);color:var(--primary);
+        {% elif grade == 'D' %}background:var(--warning-alpha);color:var(--warning);
+        {% else %}background:var(--danger-alpha);color:var(--danger);{% endif %}">
+        Grade {{ grade }}
+      </span>
+    </div>
+  </div>
+
+  <!-- SUMMARY ROW -->
+  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+    <div class="card" style="text-align:center; padding:20px 12px;">
+      <div style="font-size:1.6rem; font-weight:800; color:var(--primary);">{{ attempt.score }}</div>
+      <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px; text-transform:uppercase; font-weight:600; letter-spacing:0.06em;">Score</div>
+    </div>
+    <div class="card" style="text-align:center; padding:20px 12px;">
+      <div style="font-size:1.6rem; font-weight:800; color:var(--text-primary);">{{ total_marks }}</div>
+      <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px; text-transform:uppercase; font-weight:600; letter-spacing:0.06em;">Total Marks</div>
+    </div>
+    <div class="card" style="text-align:center; padding:20px 12px;">
+      <div style="font-size:1.6rem; font-weight:800; color:{% if attempt.tab_switches == 0 %}var(--success){% else %}var(--danger){% endif %};">
+        {{ attempt.tab_switches }}
+      </div>
+      <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px; text-transform:uppercase; font-weight:600; letter-spacing:0.06em;">Tab Switches</div>
+    </div>
+    <div class="card" style="text-align:center; padding:20px 12px;">
+      <div style="font-size:1rem; font-weight:700; color:var(--text-primary);">{{ attempt.start_time|date:"d M Y" }}</div>
+      <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px; text-transform:uppercase; font-weight:600; letter-spacing:0.06em;">Date</div>
+    </div>
+  </div>
+
+  <!-- ANSWER REVIEW -->
+  {% if answer_review %}
+  <div class="card mb-6">
+    <div class="card-header">
+      <h2 class="card-title">Answer Review</h2>
+      <span class="badge badge-info">{{ answer_review|length }} questions</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+      {% for item in answer_review %}
+      <div style="padding:20px 24px; border-bottom:1px solid var(--border); {% if forloop.last %}border-bottom:none;{% endif %}">
+        <div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:12px;">
+          <div style="width:22px; height:22px; border-radius:50%; flex-shrink:0; margin-top:2px; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700;
+            {% if item.is_correct %}background:var(--success-alpha);color:var(--success);{% else %}background:var(--danger-alpha);color:var(--danger);{% endif %}">
+            {% if item.is_correct %}✓{% else %}✗{% endif %}
+          </div>
+          <p style="font-weight:600; color:var(--text-primary); margin:0; line-height:1.5;">
+            Q{{ forloop.counter }}: {{ item.question.question_text }}
+          </p>
+        </div>
+        <div style="margin-left:34px; display:flex; flex-direction:column; gap:6px;">
+          {% if item.selected %}
+          <div style="font-size:0.88rem; padding:8px 14px; border-radius:var(--radius-md);
+            {% if item.is_correct %}background:var(--success-alpha); border:1px solid rgba(16,185,129,0.3); color:var(--success);
+            {% else %}background:var(--danger-alpha); border:1px solid rgba(239,68,68,0.3); color:var(--danger);{% endif %}">
+            Your answer: {{ item.selected.option_text }}
+          </div>
+          {% else %}
+          <div style="font-size:0.88rem; padding:8px 14px; border-radius:var(--radius-md); background:var(--warning-alpha); border:1px solid rgba(245,158,11,0.3); color:var(--warning);">
+            Not answered (skipped)
+          </div>
+          {% endif %}
+          {% if not item.is_correct and item.correct_option %}
+          <div style="font-size:0.88rem; padding:8px 14px; border-radius:var(--radius-md); background:var(--success-alpha); border:1px solid rgba(16,185,129,0.3); color:var(--success);">
+            Correct answer: {{ item.correct_option.option_text }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ACTIONS -->
+  <div style="display:flex; gap:12px; justify-content:flex-end; margin-bottom:8px;">
+    <a href="{% url 'stu_index' %}" class="btn btn-outline">← Dashboard</a>
+    <a href="{% url 'quiz_history' %}" class="btn btn-outline">History</a>
+    <a href="{% url 'leaderboard' %}" class="btn btn-primary">Leaderboard</a>
+    {% if certificate %}
+    <a href="{% url 'generate_certificate' attempt.id %}" class="btn btn-success">
+      🎓 Download Certificate
+    </a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

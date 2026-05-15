@@ -1,0 +1,114 @@
+{% extends 'stu_base.html' %}
+{% block title %}Student Dashboard — Quiz Academy{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-6">
+  <div>
+    <h1 class="page-heading">Welcome, {{ request.user.first_name|default:request.user.username }}! 👋</h1>
+    <p class="page-subheading">Ready for your next quiz?</p>
+  </div>
+</div>
+
+<!-- STAT CARDS -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg></div>
+    <div class="stat-info"><h3>Available Quizzes</h3><div class="stat-value">{{ total_quizzes }}</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon success"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/></svg></div>
+    <div class="stat-info"><h3>Completed</h3><div class="stat-value">{{ completed_count }}</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon warning"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/></svg></div>
+    <div class="stat-info"><h3>Pending</h3><div class="stat-value">{{ pending_count }}</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon info"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/></svg></div>
+    <div class="stat-info"><h3>Avg Score</h3><div class="stat-value">{{ avg_pct }}%</div></div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="card mb-4">
+  <div class="card-body" style="padding:14px 24px;">
+    <form method="GET" style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+      <label style="font-weight:600; font-size:0.9rem; color:var(--text-primary); white-space:nowrap;">Filter by Subject:</label>
+      <select name="subject" class="form-input" style="min-width:200px; padding:8px 12px;" onchange="this.form.submit()">
+        <option value="">All Subjects</option>
+        {% for subj in subjects %}
+        <option value="{{ subj.id }}" {% if selected_subject == subj.id|stringformat:'s' %}selected{% endif %}>
+          {{ subj.name }}
+        </option>
+        {% endfor %}
+      </select>
+      {% if selected_subject %}
+      <a href="{% url 'stu_index' %}" class="btn btn-outline btn-sm">Clear Filter</a>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<!-- QUIZ LIST TABLE -->
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title">Available Quizzes</h2>
+    <a href="{% url 'quiz_history' %}" class="btn btn-outline btn-sm">My History →</a>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Quiz Title</th>
+          <th>Subject</th>
+          <th class="td-center">Questions</th>
+          <th class="td-center">Time</th>
+          <th class="td-center">Status</th>
+          <th class="td-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for quiz in quizzes %}
+        <tr>
+          <td class="text-muted">{{ forloop.counter }}</td>
+          <td class="td-primary">{{ quiz.title }}</td>
+          <td>{{ quiz.subject.name }}</td>
+          <td class="td-center">{{ quiz.question_count }}</td>
+          <td class="td-center">{{ quiz.time_limit_minutes }} min</td>
+          <td class="td-center">
+            {% if quiz.id in attempted_quiz_ids %}
+              <span class="badge badge-success">Completed</span>
+            {% else %}
+              <span class="badge badge-warning">Pending</span>
+            {% endif %}
+          </td>
+          <td class="td-center">
+            {% if quiz.id in attempted_quiz_ids %}
+              <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+                <a href="{% url 'quiz_result' quiz.id %}" class="btn btn-outline btn-sm">View Result</a>
+                <a href="{% url 'download_report' quiz.id %}" class="btn btn-success btn-sm">Download Report</a>
+              </div>
+            {% else %}
+              <a href="{% url 'take_quiz' quiz.id %}" class="btn btn-primary btn-sm">Start Quiz →</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg>
+              <h3>No Quizzes Available</h3>
+              <p>{% if selected_subject %}No quizzes in this subject.{% else %}Check back soon!{% endif %}</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

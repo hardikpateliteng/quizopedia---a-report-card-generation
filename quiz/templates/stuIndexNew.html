@@ -1,0 +1,27 @@
+{% extends 'stu_base.html' %} {% load static %} {% block content %}
+
+<div>
+  <h1>View all Test</h1>
+</div>
+<div class="table-div">
+  <table class="content-table">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Percentage</th>
+        <th>Completion Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in obj %}
+      <tr>
+        <td>{{i.cat_name}}</td>
+        <td>{{i.percentage}}</td>
+        <td>{{i.createdAt}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

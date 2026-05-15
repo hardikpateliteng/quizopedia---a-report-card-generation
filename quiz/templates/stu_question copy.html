@@ -1,0 +1,36 @@
+{% extends 'stu_base.html' %}
+{% load static %}
+{% block content %}
+
+{% if total_size %}
+<div>
+    <h3>Total {{total_size}} Question</h3>
+</div>
+{% endif %}
+
+<div class="question">
+    <form method="POST">
+        {% csrf_token %}
+
+        {% for i,j in final.items %}
+        <div class="stu_ques_row">
+            <input type="hidden" readonly name="question{{forloop.counter}}" value="{{i}}">
+            <h3>Q{{forloop.counter}}. {{i}}</h3></input>
+            {% for k in j %}
+            <label>
+                <input type="radio" name="{{forloop.parentloop.counter}}" value="{{k}}" required>
+                {{k}}
+                <br>
+                {% endfor %}
+        </div>
+        {% endfor %}
+
+        <div class="sbmt">
+            <input type="submit" name="sbmit" />
+        </div>
+
+    </form>
+</div>
+
+
+{% endblock %}

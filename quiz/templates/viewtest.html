@@ -1,0 +1,86 @@
+{% load static %}
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/demo.css' %}">
+    </head>
+    <title>View Test</title>
+    <body>
+        <div class="main">
+            
+            <div class="menu">
+            
+                <div class="card menu_item">
+                    <div class="logo"><img src="{% static 'logo.jpg' %}" height="45px" width="200px" style="margin:1.5rem;" onclick="window.location.href='index.html';" ></div>
+                    <a class="button button1"  href={% url 'index1' %} ><img src="{% static 'icon/dashboard.png' %}" height="20px" width="20px"> &nbspDashboard</span></a>
+                    <!-- <a class="button button1"  href={% url 'studentreport1' %} ><img src="{% static 'icon/report.png' %}" height="20px" width="20px"> &nbspStudent Report</span></a> -->
+                    <a class="button button1"  href={% url 'correct_answer' %} ><img src="{% static 'icon/view.png' %}" height="20px" width="20px"> &nbspView Answer Report</span></a>
+                    <a class="button button1"  href={% url 'addstudent' %} ><img src="{% static 'icon/create.png' %}" height="20px" width="20px"> &nbspAdd Student</span></a>
+                    <a class="button button1"  href={% url 'addoption' %} ><img src="{% static 'icon/create.png' %}" height="20px" width="20px"> Add Option</span></a>
+                    <!-- <a class="button button1"  href={% url 'create1' %} ><img src="{% static 'icon/create.png' %}" height="20px" width="20px"> &nbspCreate Test</span></a> -->
+                    <a class="button button1"  href={% url 'addcategory' %} ><img src="{% static 'icon/view.png' %}" height="20px" width="20px">Add Test category</span></a>
+                    <a class="button button1 active"  href={% url 'quistion1' %} ><img src="{% static 'icon/create.png' %}" height="20px" width="20px"> Question Add</span></a>
+                    <a class="button button1"  href={% url 'viewoption' %} ><img src="{% static 'icon/view.png' %}" height="20px" width="20px">View Options</span></a>
+                    <a class="button button1"  href={% url 'viewquestion' %} ><img src="{% static 'icon/view.png' %}" height="20px" width="20px">View Questions</span></a>    
+                    <a class="button button1"  href={% url 'viewcategory' %} ><img src="{% static 'icon/view.png' %}" height="20px" width="20px">view category </span></a>
+                    <!-- <a class="button button1"  href={% url 'viewtest' %} ><img src="{% static 'icon/view.png' %}" height="20px" width="20px"> &nbspView Test</span></a> -->
+<br>
+                    <span class="account" style="margin: 50px; "></span>
+                    <span class="button button1" onclick="window.location.href='';" style="margin-top: 10px;"><img src="{% static 'icon/profile.png' %}" height="20px" width="20px"> &nbspProfile</span>
+                    
+                </div>
+            </div>
+            
+            <div class="viewtabledrd">
+                <div class="hed">
+                    <h3 class="dbord"> &nbsp View Test</h3>    
+                    <a href="{% url 'sign1' %}" class="button logout" img src="{% static 'icon/logout.png' %}" height="20px" width="20px"> &nbspLogout </a>
+                </div> 
+               
+                <div class="card table viewtbl">
+                    <div class="card viewtest">
+                        <h3 class="tableheading" style="font-weight: bold;">&nbsp &nbsp &nbsp View Test</h3>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>TEST NAME</th>
+                            <th>CREATED DATE</th>
+                            <th>TOTAL QUESTION</th>
+                            <th>ACTION</th>
+                        </tr>
+                        <tr>
+                            <td>Test one - Aptitude Test</td>
+                            <td>26/04/2022</td>
+                            <td>25</td>
+                            <td>
+                                <img src="{% static 'icon/edit.png' %}" height="30px" width="30px" style="margin:2%;" onclick="window.location.href='index.html';" > &nbsp;
+                                <img src="{% static 'icon/viewi.png' %}" height="30px" width="30px" style="margin:2%;" onclick="window.location.href='index.html';" >
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Test one - Aptitude Test</td>
+                            <td>26/04/2022</td>
+                            <td>25</td>
+                            <td>
+                                <img src="{% static 'icon/edit.png' %}" height="30px" width="30px" style="margin:2%;" onclick="window.location.href='index.html';" > &nbsp;
+                                <img src="{% static 'icon/viewi.png' %}" height="30px" width="30px" style="margin:2%;" onclick="window.location.href='index.html';" >
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Test one - Aptitude Test</td>
+                            <td>26/04/2022</td>
+                            <td>25</td>
+                            <td>
+                                <img src="{% static 'icon/edit.png' %}" height="30px" width="30px" style="margin:2%;" onclick="window.location.href='index.html';" > &nbsp;
+                                <img src="{% static 'icon/viewi.png' %}" height="30px" width="30px" style="margin:2%;" onclick="window.location.href='index.html';" >
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+           
+            </div>
+          
+        </div>
+    </body>
+</html>

@@ -1,0 +1,27 @@
+{% extends 'stu_base.html' %}
+{% load static %}
+{% block content %}
+
+
+<div>
+    <h1>Category wise Result</h1>
+</div>
+<div class="table-div">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>Test Name</th>
+                <th>Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in all_data %}
+            <tr>
+                <td>{{i.cat_name}}</td>
+                <td>{{i.percentage}}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

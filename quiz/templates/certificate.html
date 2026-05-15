@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate — {{ cert.cert_number }}</title>
+  <link rel="stylesheet" href="{% static 'css/demo.css' %}">
+  <style>
+    body { background: #f1f5f9; font-family: 'Inter', system-ui, sans-serif; }
+
+    .cert-page { max-width: 860px; margin: 40px auto; padding: 20px; }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .cert-card {
+      background: white;
+      border-radius: 20px;
+      padding: 6px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.10);
+      background: linear-gradient(135deg, #6366f1 0%, #818cf8 50%, #10b981 100%);
+    }
+
+    .cert-inner {
+      background: white;
+      border-radius: 16px;
+      padding: 56px 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative corners */
+    .cert-inner::before,
+    .cert-inner::after {
+      content: '';
+      position: absolute;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      opacity: 0.04;
+    }
+    .cert-inner::before { background: #6366f1; top: -30px; left: -30px; width: 160px; height: 160px; }
+    .cert-inner::after  { background: #10b981; bottom: -30px; right: -30px; width: 160px; height: 160px; }
+
+    .cert-emoji { font-size: 3rem; line-height: 1; margin-bottom: 4px; }
+    .cert-org {
+      display: inline-block;
+      font-size: 0.8rem; font-weight: 800; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #6366f1;
+      border: 1.5px solid #6366f1;
+      padding: 4px 16px; border-radius: 9999px;
+      margin-bottom: 36px;
+    }
+
+    .cert-title { font-size: 2rem; font-weight: 300; color: #64748b; margin-bottom: 4px; }
+    .cert-of { font-size: 0.85rem; color: #94a3b8; margin-bottom: 24px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+    .cert-name {
+      font-size: 2.8rem; font-weight: 900;
+      color: #0f172a;
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.01em;
+      margin: 0 0 6px;
+      line-height: 1.1;
+    }
+
+    .cert-enrollment {
+      font-size: 0.88rem; color: #64748b;
+      margin-bottom: 28px;
+    }
+    .cert-enrollment strong { color: #0f172a; }
+
+    .cert-body {
+      font-size: 0.95rem; color: #475569;
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
+
+    .cert-quiz-title {
+      font-size: 1.5rem; font-weight: 800;
+      color: #0f172a; margin: 4px 0;
+    }
+    .cert-subject { font-size: 0.88rem; color: #64748b; margin-bottom: 28px; }
+
+    .cert-score-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 18px 32px;
+      margin-bottom: 36px;
+    }
+    .cert-score-item { text-align: center; }
+    .cert-score-item .val {
+      font-size: 1.8rem; font-weight: 900;
+      color: #6366f1; line-height: 1;
+    }
+    .cert-score-item .lbl {
+      font-size: 0.72rem; color: #94a3b8;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-top: 4px; font-weight: 600;
+    }
+    .cert-sep { width: 1px; height: 44px; background: #e2e8f0; }
+
+    .cert-grade-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #6366f1, #818cf8);
+      color: white; font-weight: 800; font-size: 1.1rem;
+      padding: 8px 28px; border-radius: 9999px;
+      margin-bottom: 40px;
+    }
+
+    .cert-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-top: 24px;
+      border-top: 1px solid #e2e8f0;
+      gap: 16px;
+    }
+    .cert-footer-field { text-align: center; }
+    .cert-footer-field .lbl { font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+    .cert-footer-field .val { font-weight: 700; color: #0f172a; margin-top: 4px; font-size: 0.9rem; }
+
+    .cert-no {
+      text-align: center; font-size: 0.72rem; color: #94a3b8;
+      margin-top: 20px; letter-spacing: 0.04em;
+    }
+
+    /* Print */
+    @media print {
+      body { background: white; }
+      .action-bar { display: none !important; }
+      .cert-page { margin: 0; padding: 0; max-width: 100%; }
+      .cert-card { box-shadow: none; padding: 3px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cert-page">
+
+  <!-- Action Bar -->
+  <div class="action-bar">
+    <div style="display:flex; gap:10px;">
+      <a href="{% url 'quiz_history' %}" style="display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:1.5px solid #e2e8f0;background:white;font-weight:600;font-size:0.88rem;color:#475569;text-decoration:none;cursor:pointer;">
+        ← Back to History
+      </a>
+      <a href="{% url 'quiz_result' attempt.quiz.id %}" style="display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:1.5px solid #e2e8f0;background:white;font-weight:600;font-size:0.88rem;color:#475569;text-decoration:none;cursor:pointer;">
+        View Result
+      </a>
+    </div>
+    <button onclick="window.print()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:8px;border:none;background:linear-gradient(135deg,#6366f1,#4f46e5);color:white;font-weight:700;font-size:0.9rem;cursor:pointer;box-shadow:0 4px 12px rgba(99,102,241,0.35);">
+      🖨️ Print / Save PDF
+    </button>
+  </div>
+
+  <!-- Certificate -->
+  <div class="cert-card">
+    <div class="cert-inner">
+
+      <div class="cert-emoji">🎓</div>
+      <div class="cert-org">Quiz Academy</div>
+
+      <div class="cert-title">Certificate</div>
+      <div class="cert-of">of Achievement</div>
+
+      <p class="cert-body">This is to certify that</p>
+
+      <div class="cert-name">{{ student.first_name|default:student.username }}</div>
+      <div class="cert-enrollment">
+        Enrollment: <strong>{{ student.enrollment_no|default:"—" }}</strong>
+        {% if student.branch %} &nbsp;·&nbsp; Branch: <strong>{{ student.branch }}</strong>{% endif %}
+      </div>
+
+      <p class="cert-body">has successfully completed the quiz</p>
+
+      <div class="cert-quiz-title">"{{ attempt.quiz.title }}"</div>
+      <div class="cert-subject">Subject: {{ attempt.quiz.subject.name }}</div>
+
+      <!-- Score Row -->
+      <div class="cert-score-row">
+        <div class="cert-score-item">
+          <div class="val">{{ attempt.score }}</div>
+          <div class="lbl">Score</div>
+        </div>
+        <div class="cert-sep"></div>
+        <div class="cert-score-item">
+          <div class="val">{{ attempt.total_marks }}</div>
+          <div class="lbl">Total</div>
+        </div>
+        <div class="cert-sep"></div>
+        <div class="cert-score-item">
+          <div class="val">{{ attempt.percentage }}%</div>
+          <div class="lbl">Percentage</div>
+        </div>
+      </div>
+
+      <div class="cert-grade-badge">Grade {{ attempt.grade }}</div>
+
+      <!-- Footer -->
+      <div class="cert-footer">
+        <div class="cert-footer-field">
+          <div class="lbl">Date Issued</div>
+          <div class="val">{{ cert.issued_at|date:"d M Y" }}</div>
+        </div>
+        <div class="cert-footer-field">
+          <div style="font-size:2.8rem;">🏅</div>
+        </div>
+        <div class="cert-footer-field">
+          <div class="lbl">Certificate No</div>
+          <div class="val" style="font-size:0.78rem; letter-spacing:0.06em; color:#6366f1;">{{ cert.cert_number }}</div>
+        </div>
+      </div>
+
+      <div class="cert-no">This certificate is issued by Quiz Academy and is valid for the above-mentioned assessment.</div>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

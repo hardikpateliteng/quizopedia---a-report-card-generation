@@ -1,0 +1,81 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block title %}Add Option — Quiz Academy{% endblock %}
+{% block page_title %}Add Option{% endblock %}
+{% block nav_viewquestion %}active{% endblock %}
+
+{% block content %}
+<h1 class="page-heading">Manage Options</h1>
+<p class="page-subheading">Adding options for: <strong>{{ question.question_text }}</strong></p>
+
+<!-- Existing Options -->
+<div class="card mb-6" style="max-width:680px;">
+  <div class="card-header">
+    <h2 class="card-title">Existing Options</h2>
+    <span class="badge badge-info">{{ question.options.count }} options</span>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Option Text</th>
+          <th class="td-center">Correct?</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for opt in question.options.all %}
+        <tr>
+          <td class="text-muted">{{ forloop.counter }}</td>
+          <td class="td-primary">{{ opt.option_text }}</td>
+          <td class="td-center">
+            {% if opt.is_correct %}
+            <span class="badge badge-success">✓ Correct</span>
+            {% else %}
+            <span class="badge badge-danger">✗ Wrong</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" style="padding:20px;text-align:center;color:var(--text-muted);">No options yet. Add the first one below.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add New Option -->
+<div class="card" style="max-width:680px;">
+  <div class="card-header">
+    <h2 class="card-title">Add New Option</h2>
+  </div>
+  <div class="card-body">
+    <form method="POST">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% for err in field.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      <div style="margin-top:8px;">
+        <button type="submit" class="btn btn-primary">Save Option</button>
+        <a href="{% url 'viewquestion' %}" class="btn btn-outline" style="margin-left:12px;">Done</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  input[type="text"] { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius-md); font-family:var(--font); font-size:0.95rem; color:var(--text-primary); outline:none; transition: border-color 0.2s, box-shadow 0.2s; }
+  input[type="text"]:focus { border-color:var(--border-focus); box-shadow:0 0 0 3px var(--primary-alpha); }
+  input[type="checkbox"] { accent-color:var(--primary); width:18px; height:18px; cursor:pointer; }
+</style>
+{% endblock %}

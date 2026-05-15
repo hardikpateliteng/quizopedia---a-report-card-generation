@@ -1,0 +1,236 @@
+{% extends 'admin_base.html' %}
+{% block title %}Add Student — Quiz Academy{% endblock %}
+{% block page_title %}Add Student{% endblock %}
+{% block nav_addstudent %}active{% endblock %}
+
+{% block content %}
+<h1 class="page-heading">Add New Student</h1>
+<p class="page-subheading">Register a new student account.</p>
+
+{% if s %}
+<div class="alert alert-{{ msg_type|default:'success' }}" style="margin-bottom:20px;">{{ s }}</div>
+{% endif %}
+
+<div class="card" style="max-width:720px;">
+  <div class="card-header"><h2 class="card-title">Student Information</h2></div>
+  <div class="card-body">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger" style="margin-bottom:16px;">
+        {% for err in form.non_field_errors %}
+        <div>{{ err }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.first_name.id_for_label }}">First Name <span style="color:var(--danger);">*</span></label>
+          {{ form.first_name }}
+          {% for err in form.first_name.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.last_name.id_for_label }}">Last Name</label>
+          {{ form.last_name }}
+          {% for err in form.last_name.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.email.id_for_label }}">Email <span style="color:var(--danger);">*</span></label>
+          {{ form.email }}
+          {% for err in form.email.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.password.id_for_label }}">Password <span style="color:var(--danger);">*</span></label>
+          <div style="position:relative;">
+            <button
+              type="button"
+              id="password-show-toggle"
+              style="position:absolute; right:10px; top:50%; transform:translateY(-50%); border:none; background:transparent; color:var(--text-muted); font-size:12px; font-weight:600; cursor:pointer; padding:0;"
+              aria-controls="{{ form.password.id_for_label }}"
+              aria-label="Show password"
+              aria-pressed="false"
+            >Show</button>
+            {{ form.password }}
+          </div>
+          <div id="password-strength-hint" class="form-hint" style="margin-top:6px; color:var(--text-muted);">Start typing password...</div>
+          {% for err in form.password.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.enrollment_no.id_for_label }}">Enrollment No <span style="color:var(--danger);">*</span></label>
+          {{ form.enrollment_no }}
+          {% for err in form.enrollment_no.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+          {{ form.phone_number }}
+          {% for err in form.phone_number.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.year.id_for_label }}">Year</label>
+          {{ form.year }}
+          {% for err in form.year.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.semester.id_for_label }}">Semester</label>
+          {{ form.semester }}
+          {% for err in form.semester.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.section.id_for_label }}">Section</label>
+          {{ form.section }}
+          {% for err in form.section.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.branch.id_for_label }}">Branch</label>
+          {{ form.branch }}
+          {% for err in form.branch.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.department.id_for_label }}">Department</label>
+          {{ form.department }}
+          {% for err in form.department.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.proctor.id_for_label }}">Proctor / Mentor</label>
+          {{ form.proctor }}
+          {% for err in form.proctor.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.admission_year.id_for_label }}">Admission Year</label>
+          {{ form.admission_year }}
+          {% for err in form.admission_year.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.cgpa.id_for_label }}">CGPA</label>
+          {{ form.cgpa }}
+          {% for err in form.cgpa.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.attendance.id_for_label }}">Attendance</label>
+          {{ form.attendance }}
+          {% for err in form.attendance.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.address.id_for_label }}">Address</label>
+          {{ form.address }}
+          {% for err in form.address.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.date_of_birth.id_for_label }}">Date Of Birth</label>
+          {{ form.date_of_birth }}
+          {% for err in form.date_of_birth.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.profile_photo.id_for_label }}">Profile Photo</label>
+          {{ form.profile_photo }}
+          {% for err in form.profile_photo.errors %}
+          <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+      </div>
+
+      <div style="margin-top:24px; display:flex; gap:12px;">
+        <button type="submit" class="btn btn-primary">Register Student</button>
+        <a href="{% url 'index1' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  (function () {
+    var passwordInput = document.getElementById('{{ form.password.id_for_label }}');
+    var showToggle = document.getElementById('password-show-toggle');
+    var strengthHint = document.getElementById('password-strength-hint');
+    if (!passwordInput || !strengthHint) return;
+
+    passwordInput.style.paddingRight = '56px';
+
+    function getStrengthLabel(value) {
+      if (!value) return { text: 'Password is required.', color: 'var(--danger)' };
+
+      var score = 0;
+      if (value.length >= 8) score += 1;
+      if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score += 1;
+      if (/\d/.test(value)) score += 1;
+      if (/[^A-Za-z0-9]/.test(value)) score += 1;
+
+      if (score <= 1) return { text: 'Strength: Weak', color: '#dc2626' };
+      if (score <= 3) return { text: 'Strength: Medium', color: '#d97706' };
+      return { text: 'Strength: Strong', color: '#16a34a' };
+    }
+
+    function updateStrength() {
+      var strength = getStrengthLabel(passwordInput.value.trim());
+      strengthHint.textContent = strength.text;
+      strengthHint.style.color = strength.color;
+    }
+
+    passwordInput.addEventListener('input', updateStrength);
+
+    if (showToggle) {
+      showToggle.addEventListener('click', function () {
+        var isHidden = passwordInput.type === 'password';
+        passwordInput.type = isHidden ? 'text' : 'password';
+        showToggle.textContent = isHidden ? 'Hide' : 'Show';
+        showToggle.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+        showToggle.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+      });
+    }
+
+    updateStrength();
+  })();
+</script>
+{% endblock %}

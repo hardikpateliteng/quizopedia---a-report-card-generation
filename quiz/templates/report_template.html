@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ app_name }}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 25px;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #1f2937;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: 100%;
+    }
+
+    .header-table, .details-table, .summary-table, .question-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .header-title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #0f172a;
+      letter-spacing: 0.3px;
+      padding-top: 8px;
+    }
+
+    .logo-box {
+      width: 65px;
+      height: 65px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      text-align: center;
+      vertical-align: middle;
+      color: #64748b;
+      font-size: 10px;
+      border-radius: 4px;
+    }
+
+    .separator {
+      border: none;
+      border-top: 2px solid #dbeafe;
+      margin: 12px 0 16px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #1d4ed8;
+      margin: 0 0 10px;
+      text-align: left;
+    }
+
+    .card {
+      border: 1px solid #dbe3ef;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .details-table td {
+      border: 1px solid #e2e8f0;
+      padding: 8px 10px;
+      background: #f8fafc;
+    }
+
+    .details-table td.label {
+      width: 28%;
+      font-weight: bold;
+      color: #334155;
+      background: #eef2ff;
+    }
+
+    .summary-box {
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .summary-table th, .summary-table td {
+      border: 1px solid #bfdbfe;
+      padding: 8px 6px;
+      text-align: center;
+    }
+
+    .summary-table th {
+      background: #dbeafe;
+      color: #1e3a8a;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .summary-table td {
+      background: #ffffff;
+      font-size: 13px;
+      font-weight: bold;
+      color: #0f172a;
+    }
+
+    .progress-wrap {
+      margin: 10px 0 2px;
+    }
+
+    .progress-label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .progress-outer {
+      border: 1px solid #cbd5e1;
+      background: #f1f5f9;
+      height: 16px;
+      border-radius: 10px;
+    }
+
+    .progress-inner {
+      background: #22c55e;
+      height: 16px;
+      border-radius: 10px;
+    }
+
+    .status-row {
+      margin-top: 12px;
+      text-align: right;
+    }
+
+    .status-badge {
+      color: #ffffff;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    .percentage-badge {
+      display: inline-block;
+      margin-left: 8px;
+      background: #1d4ed8;
+      color: #ffffff;
+      border-radius: 12px;
+      padding: 5px 10px;
+      font-weight: bold;
+      font-size: 11px;
+    }
+
+    .question-table {
+      margin-top: 10px;
+    }
+
+    .question-table th, .question-table td {
+      border: 1px solid #e2e8f0;
+      padding: 7px;
+      font-size: 10px;
+      vertical-align: top;
+    }
+
+    .question-table th {
+      background: #f1f5f9;
+      color: #334155;
+      text-align: left;
+    }
+
+    .text-pass {
+      color: #15803d;
+      font-weight: bold;
+    }
+
+    .text-fail {
+      color: #dc2626;
+      font-weight: bold;
+    }
+
+    .footer {
+      margin-top: 14px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      font-size: 10px;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <table class="header-table">
+      <tr>
+        <td style="width:70px;">
+          {% if logo_uri %}
+            <img src="{{ logo_uri }}" alt="Logo" style="width:65px;height:65px;object-fit:contain;" />
+          {% else %}
+            <div class="logo-box">LOGO</div>
+          {% endif %}
+        </td>
+        <td class="header-title">{{ app_name }}</td>
+      </tr>
+    </table>
+
+    <hr class="separator" />
+
+    <p class="section-title">Student Details</p>
+    <div class="card">
+      <table class="details-table">
+        <tr>
+          <td class="label">Name</td>
+          <td>{{ student_name }}</td>
+          <td class="label">Enrollment Number</td>
+          <td>{{ enrollment }}</td>
+        </tr>
+        <tr>
+          <td class="label">Date</td>
+          <td>{{ attempted_on }}</td>
+          <td class="label">Subject</td>
+          <td>{{ subject }}</td>
+        </tr>
+        <tr>
+          <td class="label">Quiz Title</td>
+          <td colspan="3">{{ quiz_title }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <p class="section-title">Performance Summary</p>
+    <div class="summary-box">
+      <table class="summary-table">
+        <tr>
+          <th>Total Questions</th>
+          <th>Correct Answers</th>
+          <th>Score</th>
+          <th>Percentage</th>
+        </tr>
+        <tr>
+          <td>{{ total_questions }}</td>
+          <td>{{ correct_answers }}</td>
+          <td>{{ score }} / {{ total_marks }}</td>
+          <td>{{ percentage }}%</td>
+        </tr>
+      </table>
+
+      <div class="progress-wrap">
+        <p class="progress-label">
+          Progress
+          <span class="percentage-badge">{{ percentage }}%</span>
+        </p>
+        <div class="progress-outer">
+          <div class="progress-inner" style="width:{{ progress_percent }}%;"></div>
+        </div>
+      </div>
+
+      <div class="status-row">
+        <span class="status-badge" style="background: {{ status_color }};">{{ status_label }}</span>
+      </div>
+    </div>
+
+    {% if question_summary %}
+      <p class="section-title">Question Summary</p>
+      <table class="question-table">
+        <tr>
+          <th style="width:5%;">#</th>
+          <th style="width:41%;">Question</th>
+          <th style="width:22%;">Your Answer</th>
+          <th style="width:22%;">Correct Answer</th>
+          <th style="width:10%;">Result</th>
+        </tr>
+        {% for item in question_summary %}
+          <tr>
+            <td>{{ item.no }}</td>
+            <td>{{ item.question }}</td>
+            <td>{{ item.selected }}</td>
+            <td>{{ item.correct }}</td>
+            <td>
+              {% if item.is_correct %}
+                <span class="text-pass">Correct</span>
+              {% else %}
+                <span class="text-fail">Incorrect</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% endif %}
+
+    <div class="footer">
+      Generated by Quiz System |
+      {{ generated_at }}
+    </div>
+  </div>
+</body>
+</html>

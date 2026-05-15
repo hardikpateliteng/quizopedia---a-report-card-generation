@@ -1,0 +1,56 @@
+{% extends 'stu_base.html' %}
+{% load static %}
+{% block content %}
+<div class="dashboard-header" style="margin-top: 40px; margin-bottom: 30px; padding: 0 20px;">
+    <h2 style="color: #89986d; font-size: 2.2rem; margin-bottom: 10px;">Contact Us</h2>
+    <p style="color: #555; font-size: 1.1rem; max-width: 800px; line-height: 1.6; margin-bottom: 20px;">
+        Have any questions or concerns regarding your exams or syllabus? Reach out to your local admin.
+    </p>
+
+    <div
+        style="background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); max-width: 600px;">
+        <form method="POST" style="display: flex; flex-direction: column; gap: 20px;">
+            {% csrf_token %}
+
+            <div>
+                <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Name</label>
+                <input name="name" type="text"
+                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"
+                    placeholder="Full Name" required>
+            </div>
+
+            <div>
+                <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Email</label>
+                <input name="email" type="email"
+                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"
+                    placeholder="Email Address" required>
+            </div>
+
+            <div>
+                <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Phone</label>
+                <input name="phone" type="number"
+                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"
+                    placeholder="Phone Number" required>
+            </div>
+
+            <div>
+                <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Message</label>
+                <textarea name="message"
+                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; min-height: 120px;"
+                    placeholder="Your Message" required></textarea>
+            </div>
+
+            <div>
+                <input type="submit" value="Send Message"
+                    style="background-color: #89986d; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.3s;">
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% if msg %}
+<script>alert('{{ msg }}')</script>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify OTP — Quiz Academy</title>
+  <link rel="stylesheet" href="{% static 'css/demo.css' %}">
+</head>
+<body class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="{% static 'images/logo.png' %}" alt="Quiz Academy">
+    </div>
+    <h1 class="auth-heading">Verify OTP</h1>
+    <p class="auth-subheading">We sent a 6-digit OTP to your registered email. Enter the code and choose a new password.</p>
+
+    {% if msg %}
+    <div class="alert alert-{{ msg_type }}">{{ msg }}</div>
+    {% endif %}
+
+    {% if not show_login_btn %}
+    <form method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label" for="otp">OTP</label>
+        {{ form.otp }}
+        {% for err in form.otp.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="new_password">New Password</label>
+        {{ form.new_password }}
+        {% for err in form.new_password.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="confirm_password">Confirm Password</label>
+        {{ form.confirm_password }}
+        {% for err in form.confirm_password.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full" style="margin-top:8px;">Verify OTP & Reset Password</button>
+    </form>
+
+    <div class="auth-divider" style="margin-top:24px; text-align:center;">
+      <p class="fs-sm text-muted">Didn't receive OTP? <a href="{% url 'forgot_password_view' %}" class="auth-link">Try again</a></p>
+    </div>
+    {% else %}
+    <div style="text-align:center; margin-top:20px;">
+      <div style="background:var(--surface-2); border-radius:var(--radius-md); padding:24px; margin-bottom:20px;">
+        <div style="font-size:2.5rem; color:var(--success); margin-bottom:12px;">✓</div>
+        <p class="fw-600" style="color:var(--text-primary);">Password Reset Successfully!</p>
+        <p class="text-muted fs-sm">You can now login with your new password.</p>
+      </div>
+      <a href="{% url 'student_login_view' %}" class="btn btn-primary btn-full">Back to Login</a>
+    </div>
+    {% endif %}
+
+    {% if not show_login_btn %}
+    <div style="margin-top:16px; text-align:center;">
+      <a href="{% url 'student_login_view' %}" class="auth-link fs-sm">Back to Login</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <style>
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-sizing: border-box;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--primary-alpha);
+    }
+  </style>
+</body>
+</html>

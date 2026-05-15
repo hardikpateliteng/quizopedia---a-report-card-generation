@@ -1,0 +1,130 @@
+{% extends 'stu_base.html' %}
+{% load static %}
+{% block content %}
+<div class="dashboard-home">
+    <div class="dashboard-header">
+        <h2>Select a Test Category</h2>
+        <p>Complete these tests to help identify your core employability skills and competencies.</p>
+    </div>
+
+    <div class="category-grid">
+        {% for i in allcat %}
+        {% if not i.categoryName in appeared %}
+        <a class="category-card" href="{% url 'stu_question' i.categoryName %}">
+            <h3>{{ i.categoryName }}</h3>
+            <span>Start Test &rarr;</span>
+        </a>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="info-section">
+        <div class="info-card">
+            <h4>Literacy</h4>
+            <p>In its broadest sense, literacy describes particular ways of thinking about and doing reading and writing
+                to understand or express concepts logically.</p>
+        </div>
+
+        <div class="info-card">
+            <h4>Aptitude</h4>
+            <p>An aptitude is an inborn component of competence to do a certain kind of work. It represents your innate
+                mental potential vs. learned skills.</p>
+        </div>
+
+        <div class="info-card">
+            <h4>Numeracy</h4>
+            <p>Numeracy is the ability to understand, reason with, and safely apply numerical concepts and fundamental
+                arithmetical operations.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-home {
+        padding: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .dashboard-header h2 {
+        color: #89986d;
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-header p {
+        color: #555;
+        font-size: 1.1rem;
+    }
+
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-bottom: 60px;
+    }
+
+    .category-card {
+        background: #c5d89d;
+        padding: 40px 30px;
+        border-radius: 12px;
+        text-align: center;
+        text-decoration: none;
+        color: #333;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        background: #9cab84;
+        color: #fff;
+    }
+
+    .category-card h3 {
+        margin: 0 0 15px 0;
+        font-size: 1.5rem;
+    }
+
+    .category-card span {
+        font-weight: 600;
+    }
+
+    .info-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .info-card {
+        background: #f6f0d7;
+        padding: 30px;
+        border-radius: 12px;
+        border-top: 5px solid #89986d;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .info-card h4 {
+        color: #89986d;
+        margin-top: 0;
+        font-size: 1.3rem;
+    }
+
+    .info-card p {
+        color: #444;
+        line-height: 1.6;
+        margin-bottom: 0;
+    }
+</style>
+
+{% if msg %}
+<script>alert('{{ msg }}')</script>
+{% endif %}
+
+{% endblock %}

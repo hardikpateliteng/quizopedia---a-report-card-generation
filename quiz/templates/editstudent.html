@@ -1,0 +1,73 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="dashboard-header" style="padding: 40px 40px 20px 40px;">
+    <h2 style="color: #89986d; font-size: 2.2rem; margin-bottom: 10px;">Edit Student Profile</h2>
+    <p style="color: #555; font-size: 1.1rem;">Update personal details or academic metrics for this user.</p>
+</div>
+
+<div
+    style="background: white; border-radius: 12px; padding: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin: 0 40px 40px 40px; max-width: 800px;">
+    <form method="post" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        {% csrf_token %}
+
+        <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Student Name</label>
+            <input type="text" value="{{obj.name}}" placeholder="Full Name" name="name"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+        </div>
+
+        <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Email Address</label>
+            <input type="email" value="{{obj.email}}" placeholder="Email Address" required name="email"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+        </div>
+
+        <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Enrollment Number</label>
+            <input type="number" value="{{obj.Enrollment_No}}" placeholder="Enrollment Code" required name="en.no"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+        </div>
+
+        <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Login Password</label>
+            <input type="password" value="{{obj.password}}" placeholder="Account Password" required name="password"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+        </div>
+
+        <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Attendance Metrics (Max
+                12)</label>
+            <input type="number" max="12" min="0" value="{{obj.Attendance}}" placeholder="Attendance Count"
+                name="attendance"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+        </div>
+
+        <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">CGPA Score (Max 7)</label>
+            <input type="number" max="7" min="0" value="{{obj.cgpa}}" placeholder="CGPA" name="cgpa"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+        </div>
+
+        <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Admin Rating (Max
+                10)</label>
+            <input type="number" max="10" min="0" value="{{obj.review}}" placeholder="Review Score" name="review"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+        </div>
+
+        <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Total Score</label>
+            <input type="number" value="{{obj.score}}" placeholder="Enter score" required name="score"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+        </div>
+
+        <div style="grid-column: span 2; margin-top: 15px;">
+            <input type="submit" value="Save Changes"
+                style="background-color: #89986d; color: white; border: none; padding: 14px 24px; border-radius: 8px; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: background 0.3s; width: 100%; box-shadow: 0 4px 6px rgba(137, 152, 109, 0.2);">
+        </div>
+    </form>
+</div>
+
+{% endblock %}

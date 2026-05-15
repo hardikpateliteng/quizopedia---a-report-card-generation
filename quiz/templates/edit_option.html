@@ -1,0 +1,51 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="dashboard-header" style="padding: 40px 40px 20px 40px;">
+    <h2 style="color: #89986d; font-size: 2.2rem; margin-bottom: 10px;">Edit Option</h2>
+    <p style="color: #555; font-size: 1.1rem;">Modify a multiple-choice option and adjust its correct answer status.</p>
+</div>
+
+<div
+    style="background: white; border-radius: 12px; padding: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin: 0 40px 40px 40px; max-width: 600px;">
+    <form method="post" style="display: flex; flex-direction: column; gap: 20px;">
+        {% csrf_token %}
+
+        <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 10px; color: #333;">Select Question</label>
+            <select required name="question"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; background: #fafafa; color: #333; cursor: pointer;">
+                {% for i in al %}
+                {% if i == obj.question %}
+                <option value="{{i.id}}" selected>{{i}}</option>
+                {% else %}
+                <option value="{{i.id}}">{{i}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 10px; color: #333;">Option Text</label>
+            <input type="text" placeholder="Enter option" name="op" value="{{obj.option_title}}" required
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+        </div>
+
+        <div
+            style="display: flex; align-items: center; gap: 10px; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
+            {% if obj.is_answer %}
+            <input type="checkbox" name="isans" value="True" checked
+                style="width: 18px; height: 18px; cursor: pointer;">
+            {% else %}
+            <input type="checkbox" name="isans" value="True" style="width: 18px; height: 18px; cursor: pointer;">
+            {% endif %}
+            <label style="font-weight: 500; color: #333; cursor: pointer; margin: 0;">Mark as Correct Answer</label>
+        </div>
+
+        <input type="submit" value="Save Changes"
+            style="background-color: #89986d; color: white; border: none; padding: 14px 24px; border-radius: 8px; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: background 0.3s; margin-top: 10px; box-shadow: 0 4px 6px rgba(137, 152, 109, 0.2);">
+    </form>
+</div>
+
+{% endblock %}

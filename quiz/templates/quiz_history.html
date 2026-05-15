@@ -1,0 +1,80 @@
+{% extends 'stu_base.html' %}
+{% block title %}Quiz History — Quiz Academy{% endblock %}
+{% block page_title %}Quiz History{% endblock %}
+{% block nav_history %}active{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-6">
+  <div>
+    <h1 class="page-heading">My Quiz History</h1>
+    <p class="page-subheading">All {{ total }} quiz attempts — Avg: <strong class="text-primary-c">{{ avg_pct }}%</strong></p>
+  </div>
+  <a href="{% url 'stu_index' %}" class="btn btn-outline">← Back to Dashboard</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Quiz</th>
+          <th>Subject</th>
+          <th class="td-center">Score</th>
+          <th class="td-center">Percentage</th>
+          <th class="td-center">Grade</th>
+          <th>Date</th>
+          <th class="td-center">Tab Switches</th>
+          <th class="td-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in attempt_data %}
+        <tr>
+          <td class="text-muted">{{ forloop.counter }}</td>
+          <td class="td-primary">{{ item.attempt.quiz.title }}</td>
+          <td>{{ item.attempt.quiz.subject.name }}</td>
+          <td class="td-center fw-600">{{ item.attempt.score }} / {{ item.total_marks }}</td>
+          <td class="td-center">
+            <span class="fw-600 {% if item.percentage >= 70 %}text-success{% elif item.percentage >= 40 %}text-primary-c{% else %}text-danger{% endif %}">
+              {{ item.percentage }}%
+            </span>
+          </td>
+          <td class="td-center">
+            <span class="badge {% if item.grade == 'A+' or item.grade == 'A' %}badge-success{% elif item.grade == 'B' or item.grade == 'C' %}badge-primary{% elif item.grade == 'D' %}badge-warning{% else %}badge-danger{% endif %}">
+              {{ item.grade }}
+            </span>
+          </td>
+          <td>{{ item.attempt.start_time|date:"d M Y, h:i A" }}</td>
+          <td class="td-center">
+            {% if item.attempt.tab_switches == 0 %}
+              <span class="badge badge-success">Clean</span>
+            {% else %}
+              <span class="badge badge-danger">{{ item.attempt.tab_switches }}</span>
+            {% endif %}
+          </td>
+          <td class="td-center">
+            <div class="flex-center gap-2">
+              <a href="{% url 'quiz_result' item.attempt.quiz.id %}" class="btn btn-outline btn-sm">Review</a>
+              {% if item.percentage >= 40 %}
+              <a href="{% url 'generate_certificate' item.attempt.id %}" class="btn btn-success btn-sm">Certificate</a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="9">
+            <div class="empty-state">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <h3>No Quiz History</h3>
+              <p>You haven't taken any quizzes yet. <a href="{% url 'stu_index' %}" class="auth-link">Start one now!</a></p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block title %}Leaderboard — Quiz Academy{% endblock %}
+{% block page_title %}Leaderboard{% endblock %}
+{% block nav_leaderboard %}active{% endblock %}
+
+{% block content %}
+<h1 class="page-heading">Leaderboard</h1>
+<p class="page-subheading">Top quiz performers across the platform.</p>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th class="td-center">Rank</th>
+          <th>Student</th>
+          <th>Quiz</th>
+          <th class="td-center">Score %</th>
+          <th class="td-center">Tab Switches</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for att in attempts %}
+        <tr>
+          <td class="td-center">
+            {% if forloop.counter == 1 %}
+              <span style="font-size:1.4rem;">🥇</span>
+            {% elif forloop.counter == 2 %}
+              <span style="font-size:1.4rem;">🥈</span>
+            {% elif forloop.counter == 3 %}
+              <span style="font-size:1.4rem;">🥉</span>
+            {% else %}
+              <span class="text-muted fw-600">#{{ forloop.counter }}</span>
+            {% endif %}
+          </td>
+          <td class="td-primary">{{ att.student.first_name|default:att.student.username }}</td>
+          <td>{{ att.quiz.title }}</td>
+          <td class="td-center fw-600 text-primary-c">{{ att.pct|floatformat:1 }}%</td>
+          <td class="td-center">
+            {% if att.tab_switches == 0 %}
+              <span class="badge badge-success">Clean</span>
+            {% else %}
+              <span class="badge badge-danger">{{ att.tab_switches }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5">
+            <div class="empty-state">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              <h3>No Attempts Yet</h3>
+              <p>Leaderboard will populate after students attempt quizzes.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

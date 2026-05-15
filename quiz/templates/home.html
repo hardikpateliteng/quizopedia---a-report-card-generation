@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Academy - Login</title>
+  <link rel="stylesheet" href="{% static 'css/demo.css' %}">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .landing-container {
+      text-align: center;
+      color: white;
+      max-width: 600px;
+      padding: 40px;
+    }
+    .landing-logo {
+      margin-bottom: 30px;
+    }
+    .landing-logo img {
+      max-width: 120px;
+      margin-bottom: 20px;
+    }
+    .landing-heading {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    .landing-subheading {
+      font-size: 18px;
+      margin-bottom: 50px;
+      opacity: 0.95;
+    }
+    .login-options {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .login-card {
+      background: white;
+      border-radius: 12px;
+      padding: 40px 30px;
+      min-width: 250px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    .login-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    }
+    .login-card-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    .login-card-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    .login-card-desc {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+    .login-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.3s ease;
+    }
+    .login-btn:hover {
+      opacity: 0.9;
+    }
+    .footer-text {
+      margin-top: 50px;
+      font-size: 13px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="landing-container">
+    <div class="landing-logo">
+      <img src="{% static 'images/logo.png' %}" alt="Quiz Academy">
+    </div>
+    <h1 class="landing-heading">Quiz Academy</h1>
+    <p class="landing-subheading">Select your role to proceed</p>
+
+    <div class="login-options">
+      <!-- Student Login -->
+      <a href="{% url 'student_login_view' %}" class="login-card" style="text-decoration: none;">
+        <div class="login-card-icon">👨‍🎓</div>
+        <div class="login-card-title">Student</div>
+        <div class="login-card-desc">Login with your enrollment number to take quizzes and track your progress.</div>
+        <div class="login-btn">Student Login</div>
+      </a>
+
+      <!-- Admin Login -->
+      <a href="{% url 'sign1' %}" class="login-card" style="text-decoration: none;">
+        <div class="login-card-icon">👨‍💼</div>
+        <div class="login-card-title">Admin</div>
+        <div class="login-card-desc">Login as admin to manage quizzes, students, and view analytics.</div>
+        <div class="login-btn">Admin Login</div>
+      </a>
+    </div>
+
+    <div class="footer-text">
+      <p>&copy; 2026 Quiz Academy. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

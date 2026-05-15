@@ -1,0 +1,31 @@
+{% extends 'stu_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="dashboard-header" style="margin-top: 40px; margin-bottom: 30px; padding: 0 20px;">
+    <h2 style="color: #89986d; font-size: 2.2rem; margin-bottom: 10px;">About Us</h2>
+    <p style="color: #555; font-size: 1.1rem; max-width: 800px; line-height: 1.6; margin-bottom: 20px;">
+        Main purpose of the proposed system is to implement the test module for the students to test their skills such
+        as aptitude and Numeracy for the behaviour and decision-making capacity, as well as literacy test. This system
+        also utilizes the various parameters such as attendance of the student, CGPA score or percentage of the final
+        result as well as reviews given by the faculty members to the students. Proposed system is designed to utilize
+        all parameters as well as scores to generate the one single score for each student.
+    </p>
+    <p style="color: #555; font-size: 1.1rem; max-width: 800px; line-height: 1.6; margin-bottom: 20px;">
+        When it comes to hiring new staff, many CEOs and HR professionals have a misguided belief about the benefit of
+        employing thorough assessments to accomplish such as, Screening applicants for conscientiousness rather than
+        intellect will result in superior outcomes, Assessing for morals rather than intellect will produce better
+        performance when it comes to hiring, Applicants misrepresent themselves on these types of tests, hence they are
+        of little use, Candidates' candidacies can be better assessed through unstructured interviews than through more
+        formal methods of assessment etc.
+    </p>
+    <p style="color: #555; font-size: 1.1rem; max-width: 800px; line-height: 1.6;">
+        Proposed system mainly consists two actors, one is student and other is admin. Admin is responsible to set the
+        various tests such as Numeracy, aptitude, literacy etc. . On the other hand, student is able to login with the
+        help of the email id as well as the Enrollment number which will be verified by the system by comparing it with
+        the database of the student. Proposed system is using the dummy database of the students rather than using API
+        connection with the database of the university.
+    </p>
+</div>
+
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block title %}Add Question — Quiz Academy{% endblock %}
+{% block page_title %}Add Question{% endblock %}
+{% block nav_addquestion %}active{% endblock %}
+
+{% block content %}
+<h1 class="page-heading">Add New Question</h1>
+<p class="page-subheading">Add a question to a quiz and configure its options.</p>
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags|default:'info' }}" style="margin-bottom:12px;">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<div class="card" style="max-width:680px;">
+  <div class="card-header">
+    <h2 class="card-title">Question Details</h2>
+  </div>
+  <div class="card-body">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <div class="form-group">
+        {% for err in form.non_field_errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.quiz.id_for_label }}">{{ form.quiz.label }}</label>
+        {{ form.quiz }}
+        {% for err in form.quiz.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.subject.id_for_label }}">Subject</label>
+        {{ form.subject }}
+        <div class="form-hint">Use existing or type a new subject name (e.g. Python).</div>
+        {% for err in form.subject.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group" style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 14px;">
+        <div class="form-hint" style="margin:0; font-size:0.9rem;">
+          Allowed: <strong id="max-questions">{{ max_questions|default:0 }}</strong>
+          &nbsp;|&nbsp; Added: <strong id="added-questions">{{ current_question_count|default:0 }}</strong>
+          &nbsp;|&nbsp; Remaining: <strong id="remaining-questions">{{ remaining_questions|default:0 }}</strong>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap;">
+          <input id="id_new_max_questions" type="number" name="new_max_questions" min="1" value="{{ max_questions|default:10 }}" style="max-width:170px;" placeholder="Set limit">
+          <button id="update-limit-btn" type="submit" name="form_action" value="update_limit" class="btn btn-outline btn-sm">Update Limit</button>
+        </div>
+        <div id="limit-reached-alert" class="form-hint" style="color:var(--danger); margin-top:6px; {% if not limit_reached %}display:none;{% endif %}">
+          Maximum questions reached for selected quiz.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.question_text.id_for_label }}">{{ form.question_text.label }}</label>
+        {{ form.question_text }}
+        {% for err in form.question_text.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.question_type.id_for_label }}">{{ form.question_type.label }}</label>
+        {{ form.question_type }}
+        {% for err in form.question_type.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.difficulty.id_for_label }}">{{ form.difficulty.label }}</label>
+        {{ form.difficulty }}
+        {% for err in form.difficulty.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.image.id_for_label }}">{{ form.image.label }}</label>
+        {{ form.image }}
+        {% for err in form.image.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.marks.id_for_label }}">{{ form.marks.label }}</label>
+        {{ form.marks }}
+        {% for err in form.marks.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group" style="margin-top:18px; border-top:1px solid var(--border); padding-top:16px;">
+        <label class="form-label">Options (add while creating question)</label>
+        <div id="tf-hint" class="form-hint" style="display:none; margin-bottom:8px;">
+          True/False mode: options are auto-filled as True and False. Select the correct answer.
+        </div>
+        <div id="mcq-hint" class="form-hint" style="margin-bottom:8px;">
+          For multiple choice, add at least 2 options and mark one correct.
+        </div>
+
+        <div style="display:grid; gap:10px;">
+          <div id="option-row-1" style="display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center;">
+            <input id="id_option1" type="text" name="option1" placeholder="Option 1" value="{{ form.option1.value|default:'' }}">
+            <label style="display:flex; align-items:center; gap:6px; white-space:nowrap;">
+              <input type="radio" name="correct_option" value="1" {% if selected_correct_option == '1' %}checked{% endif %}>
+              Correct
+            </label>
+          </div>
+          {% for err in form.option1.errors %}
+          <div class="form-hint" style="color:var(--danger); margin-top:-4px;">{{ err }}</div>
+          {% endfor %}
+
+          <div id="option-row-2" style="display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center;">
+            <input id="id_option2" type="text" name="option2" placeholder="Option 2" value="{{ form.option2.value|default:'' }}">
+            <label style="display:flex; align-items:center; gap:6px; white-space:nowrap;">
+              <input type="radio" name="correct_option" value="2" {% if selected_correct_option == '2' %}checked{% endif %}>
+              Correct
+            </label>
+          </div>
+          {% for err in form.option2.errors %}
+          <div class="form-hint" style="color:var(--danger); margin-top:-4px;">{{ err }}</div>
+          {% endfor %}
+
+          <div id="option-row-3" style="display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center;">
+            <input id="id_option3" type="text" name="option3" placeholder="Option 3 (optional)" value="{{ form.option3.value|default:'' }}">
+            <label style="display:flex; align-items:center; gap:6px; white-space:nowrap;">
+              <input type="radio" name="correct_option" value="3" {% if selected_correct_option == '3' %}checked{% endif %}>
+              Correct
+            </label>
+          </div>
+          {% for err in form.option3.errors %}
+          <div class="form-hint" style="color:var(--danger); margin-top:-4px;">{{ err }}</div>
+          {% endfor %}
+
+          <div id="option-row-4" style="display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center;">
+            <input id="id_option4" type="text" name="option4" placeholder="Option 4 (optional)" value="{{ form.option4.value|default:'' }}">
+            <label style="display:flex; align-items:center; gap:6px; white-space:nowrap;">
+              <input type="radio" name="correct_option" value="4" {% if selected_correct_option == '4' %}checked{% endif %}>
+              Correct
+            </label>
+          </div>
+          {% for err in form.option4.errors %}
+          <div class="form-hint" style="color:var(--danger); margin-top:-4px;">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        {% for err in form.correct_option.errors %}
+        <div class="form-hint" style="color:var(--danger); margin-top:8px;">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div style="margin-top:8px;">
+        <button id="save-question-btn" type="submit" name="form_action" value="add_question" class="btn btn-primary" {% if limit_reached %}disabled{% endif %}>Save Question</button>
+        <a href="{% url 'viewquestion' %}" class="btn btn-outline" style="margin-left:12px;">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  input[type="text"], input[type="number"], input[type="file"], select, textarea {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-family: var(--font);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--primary-alpha);
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const quizSelect = document.getElementById('id_quiz');
+    const questionTypeSelect = document.getElementById('id_question_type');
+    const option1Input = document.getElementById('id_option1');
+    const option2Input = document.getElementById('id_option2');
+    const option3Input = document.getElementById('id_option3');
+    const option4Input = document.getElementById('id_option4');
+    const option3Row = document.getElementById('option-row-3');
+    const option4Row = document.getElementById('option-row-4');
+    const tfHint = document.getElementById('tf-hint');
+    const mcqHint = document.getElementById('mcq-hint');
+    const correctOptionRadios = document.querySelectorAll('input[name="correct_option"]');
+    const saveQuestionBtn = document.getElementById('save-question-btn');
+    const updateLimitBtn = document.getElementById('update-limit-btn');
+    const newMaxQuestionsInput = document.getElementById('id_new_max_questions');
+    const maxQuestionsEl = document.getElementById('max-questions');
+    const addedQuestionsEl = document.getElementById('added-questions');
+    const remainingQuestionsEl = document.getElementById('remaining-questions');
+    const limitReachedAlert = document.getElementById('limit-reached-alert');
+    const quizLimits = JSON.parse('{{ quiz_limits_json|escapejs }}');
+
+    function selectedCorrectOption() {
+      const checked = document.querySelector('input[name="correct_option"]:checked');
+      return checked ? checked.value : '';
+    }
+
+    function updateLimitInfo() {
+      if (!quizSelect) return;
+      const selectedQuizId = quizSelect.value;
+      const stats = quizLimits[selectedQuizId];
+
+      if (!stats) {
+        maxQuestionsEl.textContent = '0';
+        addedQuestionsEl.textContent = '0';
+        remainingQuestionsEl.textContent = '0';
+        limitReachedAlert.style.display = 'none';
+        saveQuestionBtn.disabled = false;
+        updateLimitBtn.disabled = true;
+        return;
+      }
+
+      maxQuestionsEl.textContent = String(stats.max);
+      addedQuestionsEl.textContent = String(stats.added);
+      remainingQuestionsEl.textContent = String(stats.remaining);
+      newMaxQuestionsInput.value = String(stats.max);
+      updateLimitBtn.disabled = false;
+
+      const reached = Number(stats.remaining) <= 0;
+      limitReachedAlert.style.display = reached ? 'block' : 'none';
+      saveQuestionBtn.disabled = reached;
+    }
+
+    function toggleOptionBlocks() {
+      if (!questionTypeSelect) return;
+      const isTF = questionTypeSelect.value === 'TF';
+
+      option3Row.style.display = isTF ? 'none' : 'grid';
+      option4Row.style.display = isTF ? 'none' : 'grid';
+      tfHint.style.display = isTF ? 'block' : 'none';
+      mcqHint.style.display = isTF ? 'none' : 'block';
+
+      if (isTF) {
+        option1Input.value = 'True';
+        option2Input.value = 'False';
+        option1Input.readOnly = true;
+        option2Input.readOnly = true;
+        option3Input.value = '';
+        option4Input.value = '';
+
+        if (selectedCorrectOption() === '3' || selectedCorrectOption() === '4') {
+          correctOptionRadios.forEach(function (radio) {
+            radio.checked = false;
+          });
+        }
+      } else {
+        option1Input.readOnly = false;
+        option2Input.readOnly = false;
+      }
+    }
+
+    toggleOptionBlocks();
+    updateLimitInfo();
+    if (questionTypeSelect) {
+      questionTypeSelect.addEventListener('change', toggleOptionBlocks);
+    }
+    if (quizSelect) {
+      quizSelect.addEventListener('change', updateLimitInfo);
+    }
+  });
+</script>
+{% endblock %}

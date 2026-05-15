@@ -1,0 +1,67 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block title %}Student Reports — Quiz Academy{% endblock %}
+{% block page_title %}Student Reports{% endblock %}
+{% block nav_report %}active{% endblock %}
+
+{% block content %}
+<h1 class="page-heading">Student Reports</h1>
+<p class="page-subheading">View and download individual student performance reports.</p>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Student Name</th>
+          <th>Enrollment No</th>
+          <th>CGPA</th>
+          <th>Attendance</th>
+          <th class="td-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td class="text-muted">{{ forloop.counter }}</td>
+          <td class="td-primary">{{ s.first_name|default:s.username }}</td>
+          <td>{{ s.enrollment_no|default:"—" }}</td>
+          <td>{{ s.cgpa }}</td>
+          <td>
+            <span class="badge {% if s.attendance >= 75 %}badge-success{% elif s.attendance >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+              {{ s.attendance }}%
+            </span>
+          </td>
+          <td class="td-center">
+            <div class="flex-center gap-2">
+              <a href="{% url 'admin_student_detail' s.id %}" class="btn btn-outline btn-sm">View</a>
+              <a href="{% url 'edit_student_profile' s.id %}" class="btn btn-outline btn-sm">Edit</a>
+              <a href="{% url 'download_student_report_csv' s.id %}" class="btn btn-primary btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                CSV
+              </a>
+              <form method="POST" action="{% url 'delete_student' s.id %}" style="display:inline;" onsubmit="return confirm('Delete this student and all related quiz attempts?');">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              <h3>No Students Found</h3>
+              <p>Add students first to generate reports.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

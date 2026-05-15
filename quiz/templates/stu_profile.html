@@ -1,0 +1,142 @@
+{% extends 'stu_base.html' %}
+{% block title %}My Profile — Quiz Academy{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+{% block nav_profile %}active{% endblock %}
+
+{% block content %}
+<h1 class="page-heading">My Profile</h1>
+<p class="page-subheading">View your personal and academic information.</p>
+
+{% if not can_edit_profile %}
+<div class="alert alert-warning">Profile editing is locked by admin. You can update details only after admin grants permission.</div>
+{% endif %}
+
+{% if msg %}
+<div class="alert alert-{{ msg_type }}">{{ msg }}</div>
+{% endif %}
+
+<div style="display:grid; grid-template-columns:300px 1fr; gap:24px;">
+
+  <!-- PROFILE AVATAR CARD -->
+  <div class="card">
+    <div class="card-body" style="text-align:center; padding:32px 24px;">
+      <div style="display:flex; align-items:center; justify-content:center; flex-direction:column; gap:18px;">
+        {% if student.profile_photo %}
+        <img src="{{ student.profile_photo.url }}" alt="Profile Photo" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);" />
+        {% else %}
+        <div style="width:100px;height:100px;border-radius:50%;background:var(--primary);color:white;font-size:2.5rem;font-weight:800;display:flex;align-items:center;justify-content:center;">{{ request.user.username|first|upper }}</div>
+        {% endif %}
+      </div>
+      <p class="fw-700" style="font-size:1.15rem; margin-top:12px;">{{ request.user.first_name|default:request.user.username }} {{ request.user.last_name }}</p>
+      <p class="text-muted fs-sm" style="margin-top:4px;">{{ request.user.email }}</p>
+
+      <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border); text-align:left;">
+        <h3 style="font-size:1rem; margin-bottom:8px;">Contact</h3>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="flex-between"><span class="text-muted fs-sm">Phone</span><span class="fw-600 fs-sm">{{ request.user.phone_number|default:"—" }}</span></div>
+          <div class="flex-between"><span class="text-muted fs-sm">Address</span><span class="fw-600 fs-sm">{{ request.user.address|default:"—" }}</span></div>
+          <div class="flex-between"><span class="text-muted fs-sm">Year</span><span class="fw-600 fs-sm">{{ request.user.year|default:"—" }}</span></div>
+          <div class="flex-between"><span class="text-muted fs-sm">Semester</span><span class="fw-600 fs-sm">{{ request.user.semester|default:"—" }}</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border); text-align:left;">
+        <h3 style="font-size:1rem; margin-bottom:8px;">Academic</h3>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="flex-between"><span class="text-muted fs-sm">Enrollment</span><span class="fw-600 fs-sm">{{ request.user.enrollment_no|default:"—" }}</span></div>
+          <div class="flex-between"><span class="text-muted fs-sm">Roll No</span><span class="fw-600 fs-sm">{{ request.user.roll_number|default:"—" }}</span></div>
+          <div class="flex-between"><span class="text-muted fs-sm">Branch</span><span class="fw-600 fs-sm">{{ request.user.branch|default:"Not set" }}</span></div>
+          <div class="flex-between"><span class="text-muted fs-sm">Department</span><span class="fw-600 fs-sm">{{ request.user.department|default:"Not set" }}</span></div>
+          <div class="flex-between"><span class="text-muted fs-sm">Proctor</span><span class="fw-600 fs-sm">{{ request.user.proctor|default:"Not set" }}</span></div>
+          <div class="flex-between"><span class="text-muted fs-sm">Admission Year</span><span class="fw-600 fs-sm">{{ request.user.admission_year|default:"—" }}</span></div>
+          <div class="flex-between"><span class="text-muted fs-sm">CGPA</span><span class="fw-600 fs-sm">{{ request.user.cgpa }}</span></div>
+          <div class="flex-between"><span class="text-muted fs-sm">Attendance</span><span class="fw-600 fs-sm">{{ request.user.attendance }}%</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+        <div class="stats-grid" style="grid-template-columns:1fr 1fr; gap:12px;">
+          <div style="background:var(--surface-2); border-radius:var(--radius-md); padding:12px; text-align:center;">
+            <div style="font-size:1.5rem; font-weight:800; color:var(--primary);">{{ quizzes_attempted }}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Quizzes Done</div>
+          </div>
+          <div style="background:var(--surface-2); border-radius:var(--radius-md); padding:12px; text-align:center;">
+            <div style="font-size:1.5rem; font-weight:800; color:var(--success);">{{ avg_pct }}%</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Avg Score</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT FORM -->
+  <div class="card">
+    <div class="card-header"><h2 class="card-title">Edit Profile</h2></div>
+    <div class="card-body">
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          {% for field in form %}
+          <div class="form-group">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for err in field.errors %}
+            <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+        <div style="margin-top:8px;">
+          {% if can_edit_profile %}
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          {% else %}
+          <button type="button" class="btn btn-outline" disabled>Edit Locked by Admin</button>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- RECENT ATTEMPTS -->
+{% if recent_attempts %}
+<div class="card mt-6">
+  <div class="card-header">
+    <h2 class="card-title">Recent Quiz Attempts</h2>
+    <a href="{% url 'quiz_history' %}" class="btn btn-outline btn-sm">View All →</a>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr><th>Quiz</th><th>Score</th><th class="td-center">Percentage</th><th class="td-center">Grade</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        {% for att in recent_attempts %}
+        <tr>
+          <td class="td-primary">{{ att.quiz.title }}</td>
+          <td>{{ att.score }} / {{ att.total_marks }}</td>
+          <td class="td-center fw-600 {% if att.percentage >= 70 %}text-success{% elif att.percentage >= 40 %}text-primary-c{% else %}text-danger{% endif %}">
+            {{ att.percentage }}%
+          </td>
+          <td class="td-center"><span class="badge badge-primary">{{ att.grade }}</span></td>
+          <td>{{ att.start_time|date:"d M Y" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  input[type="text"],input[type="email"],input[type="number"],select {
+    width:100%; padding:10px 14px; border:1px solid var(--border);
+    border-radius:var(--radius-md); font-family:var(--font); font-size:0.95rem;
+    color:var(--text-primary); outline:none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus, select:focus { border-color:var(--border-focus); box-shadow:0 0 0 3px var(--primary-alpha); }
+</style>
+{% endblock %}

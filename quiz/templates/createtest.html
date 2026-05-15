@@ -1,0 +1,58 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block title %}Create Quiz — Quiz Academy{% endblock %}
+{% block page_title %}Create New Quiz{% endblock %}
+{% block nav_createquiz %}active{% endblock %}
+
+{% block content %}
+<h1 class="page-heading">Create New Quiz</h1>
+<p class="page-subheading">Set up a new quiz for your students.</p>
+
+<div class="card" style="max-width:640px;">
+  <div class="card-header">
+    <h2 class="card-title">Quiz Details</h2>
+  </div>
+  <div class="card-body">
+    <form method="POST">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+        <div class="form-hint">{{ field.help_text }}</div>
+        {% endif %}
+        {% for err in field.errors %}
+        <div class="form-hint" style="color:var(--danger);">{{ err }}</div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      <div style="margin-top:8px;">
+        <button type="submit" class="btn btn-primary">Create Quiz</button>
+        <a href="{% url 'viewquiz' %}" class="btn btn-outline" style="margin-left:12px;">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  input[type="text"], input[type="number"], input[type="datetime-local"], select, textarea {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-family: var(--font);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--primary-alpha);
+  }
+</style>
+{% endblock %}

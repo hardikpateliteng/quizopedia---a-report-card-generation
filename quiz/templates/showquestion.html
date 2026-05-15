@@ -1,0 +1,116 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block title %}Question Bank — Quiz Academy{% endblock %}
+{% block page_title %}Question Bank{% endblock %}
+{% block nav_viewquestion %}active{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-6">
+  <div>
+    <h1 class="page-heading">Question Bank</h1>
+    <p class="page-subheading">Select a quiz title to open and manage its questions.</p>
+  </div>
+  <a href="{% url 'addquestion' %}{% if selected_quiz %}?quiz={{ selected_quiz }}{% endif %}" class="btn btn-primary">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    Add Question
+  </a>
+</div>
+
+<div style="display:grid; grid-template-columns:320px 1fr; gap:20px; align-items:start;">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Quiz Titles</h2>
+    </div>
+    <div class="card-body" style="padding:0;">
+      {% if quizzes %}
+      <div style="display:flex; flex-direction:column;">
+        {% for qz in quizzes %}
+        <a href="{% url 'viewquestion' %}?quiz={{ qz.id }}"
+           style="padding:14px 16px; border-bottom:1px solid var(--border); text-decoration:none; color:var(--text-primary); {% if selected_quiz == qz.id|stringformat:'s' %}background:var(--surface-2);{% endif %}">
+          <div style="font-weight:700;">{{ qz.title }}</div>
+          <div class="text-muted fs-sm">{{ qz.subject.name }} · {{ qz.total_questions }} / {{ qz.max_questions }}</div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state" style="padding:24px;">
+        <h3>No Quiz Found</h3>
+        <p>Create a quiz first to manage questions.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">
+        {% if selected_quiz_obj %}
+        {{ selected_quiz_obj.title }} Questions
+        {% else %}
+        Questions
+        {% endif %}
+      </h2>
+    </div>
+    {% if selected_quiz_obj %}
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Question</th>
+            <th>Type</th>
+            <th>Difficulty</th>
+            <th>Marks</th>
+            <th>Options</th>
+            <th class="td-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in al %}
+          <tr>
+            <td class="text-muted">{{ forloop.counter }}</td>
+            <td class="td-primary" style="max-width:360px;">{{ i.question_text }}</td>
+            <td>{{ i.get_question_type_display }}</td>
+            <td>
+              <span class="badge {% if i.difficulty == 'Easy' %}badge-success{% elif i.difficulty == 'Medium' %}badge-warning{% else %}badge-danger{% endif %}">
+                {{ i.difficulty }}
+              </span>
+            </td>
+            <td class="fw-600">{{ i.marks }}</td>
+            <td>{{ i.options.count }}</td>
+            <td class="td-center">
+              <div class="flex-center gap-2">
+                {% if i.question_type == 'TF' %}
+                <span class="badge badge-info">Auto: True / False</span>
+                {% else %}
+                <a href="{% url 'addoption' i.id %}" class="btn btn-success btn-sm">+ Option</a>
+                {% endif %}
+                <form method="POST" action="{% url 'delete_question' i.id %}" style="display:inline;" onsubmit="return confirm('Delete this question?');">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7">
+              <div class="empty-state">
+                <h3>No Questions In This Quiz</h3>
+                <p>Add a question to this quiz.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state" style="padding:28px;">
+      <h3>Select A Quiz</h3>
+      <p>Click any quiz title from the left to open and manage its questions.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

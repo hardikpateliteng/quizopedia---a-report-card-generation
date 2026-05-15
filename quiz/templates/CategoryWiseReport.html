@@ -1,0 +1,65 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="dashboard-header" style="padding: 40px 40px 20px 40px;">
+    <h2 style="color: #89986d; font-size: 2.2rem; margin-bottom: 10px;">Category Wise Report</h2>
+    <p style="color: #555; font-size: 1.1rem;">Filter and view student performance by specific subject categories.</p>
+</div>
+
+<div
+    style="background: white; border-radius: 12px; padding: 30px 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin: 0 40px 30px 40px; max-width: 800px;">
+    <form method="post" style="display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap;">
+        {% csrf_token %}
+        <div style="flex: 1; min-width: 250px;">
+            <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Select Category</label>
+            <select required name="category"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; background: #fafafa; color: #333; cursor: pointer;">
+                {% for i in cat %}
+                <option value="{{i}}">{{i}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="flex: 1; min-width: 250px;">
+            <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #333;">Performance Filter</label>
+            <select required name="type"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; background: #fafafa; color: #333; cursor: pointer;">
+                <option value="below">Below 50%</option>
+                <option value="above">Above 50%</option>
+            </select>
+        </div>
+        <input type="submit" value="Generate Report"
+            style="background-color: #89986d; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.3s; height: 46px; box-shadow: 0 4px 6px rgba(137, 152, 109, 0.2);">
+    </form>
+</div>
+
+{% if data %}
+<div class="table-container"
+    style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin: 0 40px 40px 40px;">
+    <h3
+        style="padding: 20px; background: #fafafa; border-bottom: 1px solid #eee; margin: 0; color: #333; font-size: 1.2rem;">
+        Detailed Report</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #89986d; color: white; text-align: left;">
+                <th style="padding: 15px 20px; font-weight: 600;">Student Name</th>
+                <th style="padding: 15px 20px; font-weight: 600;">Enrollment</th>
+                <th style="padding: 15px 20px; font-weight: 600;">Category</th>
+                <th style="padding: 15px 20px; font-weight: 600; text-align: right;">Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in data %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px 20px; color: #333; font-weight: 500;">{{i.stu_name}}</td>
+                <td style="padding: 15px 20px; color: #555;">{{i.stu_name.Enrollment_No}}</td>
+                <td style="padding: 15px 20px; color: #555;">{{i.cat_name}}</td>
+                <td style="padding: 15px 20px; color: #555; text-align: right; font-weight: 600;">{{i.percentage}}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% endblock %}

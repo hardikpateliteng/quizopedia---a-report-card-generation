@@ -1,0 +1,51 @@
+{% extends 'stu_base.html' %}
+{% load static %}
+{% block content %}
+
+{% if totalMarks %}
+<div class="dashboard-header" style="margin-top: 40px; margin-bottom: 30px;">
+  <h2 style="color: #89986d; font-size: 2.2rem; margin-bottom: 10px;">Your Test Results</h2>
+  <p style="color: #555; font-size: 1.1rem;">Review your detailed performance metrics and completion history.</p>
+</div>
+
+<div class="table-container"
+  style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 40px;">
+  <table style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr style="background: #89986d; color: white; text-align: left;">
+        <th style="padding: 15px 20px; font-weight: 600;">Subject / Test Name</th>
+        <th style="padding: 15px 20px; font-weight: 600;">Completion Date</th>
+        <th style="padding: 15px 20px; font-weight: 600;">Score Percentage</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for mark in totalMarks %}
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 15px 20px; color: #333; font-weight: 500;">{{ mark.cat_name }}</td>
+        <td style="padding: 15px 20px; color: #555;">{{ mark.createdAt|date:"M d, Y" }}</td>
+        <td
+          style="padding: 15px 20px; font-weight: bold; color: {% if mark.percentage >= 50 %}#89986d{% else %}#e67e22{% endif %};">
+          {{ mark.percentage|floatformat:1 }}%</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% if percentage %}
+<div>
+  <h3 class="special">Your Overall Result is {{ percentage }}%</h3>
+</div>
+{% else %}
+<div style="text-align: center; justify-content: center">
+  <h3 class="special" style="font-size: 23px">
+    Please complete all the test first
+  </h3>
+  <h3 class="special" style="font-size: 23px">
+    Then your WPS score will be available
+  </h3>
+</div>
+{% endif %}
+
+{% endblock %}

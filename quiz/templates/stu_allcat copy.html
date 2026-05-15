@@ -1,0 +1,51 @@
+{% extends 'stu_base.html' %}
+{% load static %}
+{% block content %}
+<div class="question">
+    <div>
+        <h3>Test Category</h3>
+        <small><q>Student should give various tests which helps to identify the employability skill of the Candidate.</q></small>
+    </div>
+
+    <div class="allcat_row">
+        {% for i in allcat %}
+        {{i.categoryName}}
+        <!-- <div style="margin: 5px 30px 5px 0;">
+            <!-- <a class="btn btn-primary" style="padding: 50px 100px 50px 100px;" href="{% url 'stu_question' i.id %}"><strong>{{i.categoryName}}</strong></a> -->
+            <a class="btn btn-primary" style="padding: 50px 100px 50px 100px;" href=""><strong>{{i.categoryName}}</strong></a>
+        </div> -->
+        {% endfor %}
+    </div>
+
+    <div    class="stu_row">
+        <div class="allcat_row1">
+            <p><strong>Literacy </strong>in its broadest sense describes "particular ways of thinking about and doing
+                reading and writing" with the purpose of understanding or expressing thoughts or ideas in written form
+                in
+                some specific context of use.</p>
+        </div>
+
+        <div class="allcat_row1">
+            <p>An<strong> Aptitude </strong>is a component of a competence to do a certain kind of work at a certain
+                level.
+                Outstanding aptitude can be considered "talent." An aptitude may be physical or mental. Aptitude is
+                inborn
+                potential to do certain kinds of work whether developed or undeveloped. Ability is developed knowledge,
+                understanding, learnt or acquired abilities (skills) or attitude. The innate nature of aptitude is in
+                contrast
+                to skills and achievement, which represent knowledge or ability that is gained through learning.</p>
+        </div>
+
+        <div class="allcat_row1">
+            <p><strong>Numeracy </strong>is the ability to understand, reason with, and to apply simple numerical
+                concepts.Basic numeracy skills consist of comprehending fundamental arithmetical operations like
+                addition, subtraction, multiplication, and division.</p>
+        </div>
+    </div>
+
+</div>
+{% if msg %}
+<script>alert('{{ msg }}')</script>
+{% endif %}
+
+{% endblock %}

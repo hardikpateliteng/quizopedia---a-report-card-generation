@@ -1,0 +1,38 @@
+{% extends 'stu_base.html' %} {% load static %} {% block content %}
+
+{% if total_size %}
+<div>
+  <h3>Total {{total_size}} Question</h3>
+</div>
+{% endif %}
+
+<div class="question">
+  <form method="POST">
+    {% csrf_token %}
+    <div class="stu_ques_row">
+      {% for k in final %}
+
+      <input type="hidden" readonly name="question{{forloop.counter}}" value="{{k.id}}" />
+
+      {{forloop.counter}}. <spna> </spna>{{k}}<br />
+
+      <input type="radio" name="{{forloop.counter}}" value="{{k.option1}}" required />
+      {{k.option1}}<br />
+      <input type="radio" name="{{forloop.counter}}" value="{{k.option2}}" required />
+      {{k.option2}}<br />
+      <input type="radio" name="{{forloop.counter}}" value="{{k.option3}}" required />
+      {{k.option3}}<br />
+      <input type="radio" name="{{forloop.counter}}" value="{{k.option4}}" required />
+      {{k.option4}}<br />
+
+      <!-- <br> -->
+      {% endfor %}
+    </div>
+
+    <div class="sbmt">
+      <input type="submit" name="sbmit" />
+    </div>
+  </form>
+</div>
+
+{% endblock %}

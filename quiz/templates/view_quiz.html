@@ -1,0 +1,76 @@
+{% extends 'admin_base.html' %}
+{% block title %}Manage Quizzes — Quiz Academy{% endblock %}
+{% block page_title %}Manage Quizzes{% endblock %}
+{% block nav_viewquiz %}active{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-6">
+  <div>
+    <h1 class="page-heading">Manage Quizzes</h1>
+    <p class="page-subheading">{{ quizzes.count }} quizzes total.</p>
+  </div>
+  <a href="{% url 'create1' %}" class="btn btn-primary">+ Create New Quiz</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Quiz Title</th>
+          <th>Subject</th>
+          <th class="td-center">Questions</th>
+          <th class="td-center">Time (min)</th>
+          <th class="td-center">Attempts</th>
+          <th class="td-center">Status</th>
+          <th class="td-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for quiz in quizzes %}
+        <tr>
+          <td class="text-muted">{{ forloop.counter }}</td>
+          <td class="td-primary">{{ quiz.title }}</td>
+          <td>{{ quiz.subject.name }}</td>
+          <td class="td-center">{{ quiz.question_count }}</td>
+          <td class="td-center">{{ quiz.time_limit_minutes }}</td>
+          <td class="td-center fw-600">{{ quiz.attempt_count }}</td>
+          <td class="td-center">
+            {% if quiz.is_active %}
+              <span class="badge badge-success">Active</span>
+            {% else %}
+              <span class="badge badge-warning">Inactive</span>
+            {% endif %}
+          </td>
+          <td class="td-center">
+            <div class="flex-center gap-2">
+              <a href="{% url 'edit_quiz' quiz.id %}" class="btn btn-outline btn-sm">Edit</a>
+              <a href="{% url 'toggle_quiz' quiz.id %}" class="btn btn-outline btn-sm"
+                style="{% if quiz.is_active %}color:var(--warning);border-color:var(--warning);{% else %}color:var(--success);border-color:var(--success);{% endif %}">
+                {% if quiz.is_active %}Disable{% else %}Enable{% endif %}
+              </a>
+              <form method="POST" action="{% url 'delete_quiz' quiz.id %}" style="display:inline;"
+                    onsubmit="return confirm('Delete \'{{ quiz.title }}\'? This cannot be undone.');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8">
+            <div class="empty-state">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2"/></svg>
+              <h3>No Quizzes Yet</h3>
+              <p><a href="{% url 'create1' %}" class="auth-link">Create your first quiz →</a></p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

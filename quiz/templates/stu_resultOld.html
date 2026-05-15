@@ -1,0 +1,36 @@
+{% extends 'stu_base.html' %}
+{% load static %}
+{% block content %}
+
+{% if final_percentage %}
+<div class="table-div">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>Test Name</th>
+                <th>Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for l, v in res.items %}
+            <tr>
+                <td>{{l}}</td>
+                <td>{{v}}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h3 class="special">Your Overall Result is {{ final_percentage }}%</h3>
+</div>
+{% else %}
+<div style="text-align:center; justify-content: center;">
+    <h3 class="special" style="font-size: 23px;">Please complete all the test first </h3>
+    <h3 class="special" style="font-size: 23px;">Then your WPS score will be available</h3>
+</div>
+{% endif %}
+
+
+{% endblock %}

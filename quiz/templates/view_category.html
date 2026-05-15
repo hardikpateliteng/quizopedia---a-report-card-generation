@@ -1,0 +1,45 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="dashboard-header"
+    style="padding: 40px 40px 20px 40px; display: flex; justify-content: space-between; align-items: flex-end;">
+    <div>
+        <h2 style="color: #89986d; font-size: 2.2rem; margin-bottom: 10px;">Test Categories</h2>
+        <p style="color: #555; font-size: 1.1rem;">View and manage the available subjects for student examinations.</p>
+    </div>
+    <a href="{% url 'add_category' %}"
+        style="background-color: #89986d; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: background 0.3s;">+
+        Add Category</a>
+</div>
+
+<div class="table-container"
+    style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin: 0 40px 40px 40px;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #89986d; color: white; text-align: left;">
+                <th style="padding: 15px 20px; font-weight: 600; width: 80%;">Category Name</th>
+                <th style="padding: 15px 20px; font-weight: 600; width: 20%; text-align: center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in obj %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px 20px; color: #333; font-weight: 500;">{{i}}</td>
+                <td style="padding: 15px 20px; text-align: center;">
+                    <a href="{% url 'editcategory' i.id %}"
+                        style="color: #89986d; background: #f6f0d7; padding: 6px 16px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: background 0.2s; display: inline-block;">Edit</a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not obj %}
+            <tr>
+                <td colspan="2" style="padding: 30px; text-align: center; color: #888;">No test categories have been
+                    created yet.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
